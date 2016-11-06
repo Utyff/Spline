@@ -3,21 +3,21 @@
 
     <item
         is-multidex="true"
-        jar="D:\Projects\Spline\app\build\intermediates\incremental-classes\debug\instant-run-bootstrap.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="25.0.0"
-        sha1="8803ff98fc350a51820473d1d228c384c33fe3e7">
-        <dex dex="D:\Projects\Spline\app\build\intermediates\transforms\dex\debug\folders\1000\10\instant-run-bootstrap_ea0e9c0f6d23e169c519e3fc755069b654bd6a1d\classes.dex" />
-    </item>
-    <item
-        is-multidex="true"
         jar="D:\Projects\Spline\app\build\intermediates\incremental-runtime-classes\debug\instant-run.jar"
         jumboMode="true"
         optimize="true"
         revision="25.0.0"
-        sha1="6111cdd26787f3916cfc591843d475bd0380bba5">
+        sha1="7cc7359a34259c5b651fa14e68ad1aa157576cad">
         <dex dex="D:\Projects\Spline\app\build\intermediates\transforms\dex\debug\folders\1000\10\instant-run_e085091a70abe9e1f1d7c712031b61a5ecc82c23\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="D:\Projects\Spline\app\build\intermediates\incremental-classes\debug\instant-run-bootstrap.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.0"
+        sha1="59c4e374763634a2d7ddca340cb8a5551200a69b">
+        <dex dex="D:\Projects\Spline\app\build\intermediates\transforms\dex\debug\folders\1000\10\instant-run-bootstrap_ea0e9c0f6d23e169c519e3fc755069b654bd6a1d\classes.dex" />
     </item>
 
 </items>

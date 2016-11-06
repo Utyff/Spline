@@ -4,10 +4,8 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Path;
 import android.graphics.PointF;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -15,9 +13,11 @@ import android.view.View;
 public class SplineView extends View implements View.OnTouchListener {
 
     Paint paint;
-    Path path, path2;
+    ExtPath path;
     PointF [] pp;
     final static int MAX_DIST = 30;
+    PointF shift = new PointF(-300, -730);
+    float  scale = 10;
 
     public SplineView(Context context) {
         super(context);
@@ -37,37 +37,37 @@ public class SplineView extends View implements View.OnTouchListener {
     private void init(){
         setOnTouchListener(this);
         paint = new Paint();
-
         paint.setStyle(Paint.Style.STROKE);
         paint.setFlags(Paint.ANTI_ALIAS_FLAG);
 
-        pp = new PointF[4];
-        pp[0] = new PointF(50,50);
-        pp[1] = new PointF(700,50);
-        pp[2] = new PointF(100,600);
-        pp[3] = new PointF(400,600);
-        path = new Path();
-        path2 = new Path();
+        //String str="921,987, 871,987, 820,993, 779,1001, 750,987, 750,958, 774,941, 780,916, 768,893, 740,888, 697,894, 667,905, 645,907, 630,900, 621,881, 623,860, 645,841, 683,827, 703,809, 715,785, 718,746, 702,708, 680,679, 641,647, 611,630, 578,620, 554,621, 534,626, 514,636, 494,651, 466,683, 448,711, 419,753, 398,779, 371,802, 341,819, 303,821, 274,792, 275,759, 289,741, 322,713, 355,685, 369,663, 377,634, 371,610, 353,597, 307,599, 271,601, 249,595, 233,569, 236,535, 233,518, 215,505, 190,499, 172,484, 158,451, 150,410, 136,383, 109,362, 84,358, 57,358, 17,361";
+        String str="380,773, 391,794, 392,818, 383,841, 363,859, 336,866";
+        str = str.replace(" ", "");
+        String[] strs = str.split(",");
+        pp = new PointF[strs.length/2];
+        for( int i=0; i<strs.length; i++) {
+            PointF p = new PointF();
+            p.x = Integer.parseInt( strs[i] );
+            p.x = (p.x + shift.x)*scale;
+            p.y = Integer.parseInt( strs[++i] );
+            p.y = (p.y + shift.y)*scale;
+            pp[i/2]=p;
+        }
+
+        path  = new ExtPath();
         makePath();
     }
 
     void makePath() {
         path.rewind();
-        path.moveTo(pp[0].x, pp[0].y);
-        path.cubicTo(pp[1].x, pp[1].y, pp[2].x, pp[2].y, pp[3].x, pp[3].y);
-
-        path2.rewind();
-        path2.moveTo(pp[0].x, pp[0].y);
-        path2.lineTo(pp[1].x, pp[1].y);
-        path2.lineTo(pp[2].x, pp[2].y);
-        path2.lineTo(pp[3].x, pp[3].y);
+        path.Spline(pp);
     }
 
     int getPointNum(int x, int y) {
-        for( int i=0; i<pp.length; i++ ) {
+        for( int i=0; i<pp.length; i++ )
             if(  distance(x,y, (int)pp[i].x,(int)pp[i].y)<MAX_DIST )
                 return i;
-        }
+
         return -1;
     }
 
@@ -81,8 +81,7 @@ public class SplineView extends View implements View.OnTouchListener {
 
     @Override
     public boolean onTouch(View view, MotionEvent ev) {
-        logME(ev, "onTouch " + ev.getAction());
-
+        //logME(ev, "onTouch " + ev.getAction());
         if( pNum==-1 ) {
             int ii = getPointNum((int)ev.getX(), (int)ev.getY());
             if( ii==-1 ) return false;
@@ -94,11 +93,10 @@ public class SplineView extends View implements View.OnTouchListener {
             if( ev.getAction()==MotionEvent.ACTION_UP )
                 pNum=-1;
         }
-
         return true;
     }
 
-    void logME(MotionEvent ev, String tag) {
+/*    void logME(MotionEvent ev, String tag) {
         final int historySize = ev.getHistorySize();
         final int pointerCount = ev.getPointerCount();
         for (int h = 0; h < historySize; h++) {
@@ -112,7 +110,7 @@ public class SplineView extends View implements View.OnTouchListener {
         for (int p = 0; p < pointerCount; p++) {
             Log.d(tag, "  pointer "+ ev.getPointerId(p) +" : ("+ ev.getX(p) +" , "+ ev.getY(p)+")" );
         }
-    }
+    } //*/
 
     @Override
     protected void onDraw(Canvas canvas) {
@@ -122,8 +120,18 @@ public class SplineView extends View implements View.OnTouchListener {
         paint.setStrokeWidth(5);
         canvas.drawPath(path, paint);
 
-        paint.setColor(Color.GRAY);
-        paint.setStrokeWidth(2);
-        canvas.drawPath(path2, paint);
+        paint.setColor(Color.BLACK);
+        paint.setStrokeWidth(5);
+        for( PointF p : pp )
+            canvas.drawOval(p.x-4,p.y-4,p.x+4,p.y+4,paint);
+
+        paint.setColor(Color.GREEN);
+        paint.setStrokeWidth(5);
+        for( PointF p : path.firstControlPoints )
+            canvas.drawOval(p.x-4,p.y-4,p.x+4,p.y+4,paint);
+        paint.setColor(Color.BLUE);
+        paint.setStrokeWidth(5);
+        for( PointF p : path.secondControlPoints )
+            canvas.drawOval(p.x-4,p.y-4,p.x+4,p.y+4,paint); //*/
     }
 }
