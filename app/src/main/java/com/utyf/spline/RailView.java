@@ -17,7 +17,7 @@ import android.view.View;
 public class RailView extends View implements View.OnTouchListener {
 
     Paint paint;
-    ExtPath path;
+    ExtPath path, path2;
     PointF[] pp;
     final static int MAX_DIST = 30;
     PointF shift = new PointF(-120, -120);
@@ -68,6 +68,7 @@ public class RailView extends View implements View.OnTouchListener {
         }
 
         path  = new ExtPath();
+        path2 = new ExtPath();
         makePath();
     }
 
@@ -89,15 +90,23 @@ public class RailView extends View implements View.OnTouchListener {
             coordinates[step + 1] = (coordinates[1] * 3 + coordinates[2 * step + 1] * 6 - coordinates[4 * step + 1]) / 8;
             coordinates[2 * count * steps - step]     = (coordinates[2 * count * steps]     * 3 + coordinates[2 * count * steps - 2 * step]     * 6 - coordinates[2 * count * steps - 4 * step])     / 8;
             coordinates[2 * count * steps - step + 1] = (coordinates[2 * count * steps + 1] * 3 + coordinates[2 * count * steps - 2 * step + 1] * 6 - coordinates[2 * count * steps - 4 * step + 1]) / 8;
-            for( int i=1; i<count * steps % step - 2; i++ ) {
+            for( int i=1; i<count * steps / step - 2; i++ ) {
                 coordinates[2 * i * step + step]     = (-coordinates[2 * i * step - 2 * step]     + coordinates[2 * i * step]     * 9 + coordinates[2 * i * step + 2 * step]     * 9 - coordinates[2 * i * step + 4 * step])     / 16;
                 coordinates[2 * i * step + step + 1] = (-coordinates[2 * i * step - 2 * step + 1] + coordinates[2 * i * step + 1] * 9 + coordinates[2 * i * step + 2 * step + 1] * 9 - coordinates[2 * i * step + 4 * step + 1]) / 16;
             }
-            step = step % 2;
+            step = step / 2;
         }
         //    Polyline(BitMap, coordinates, PenWidth, False, Smooth, 0, 100);
 
 // =============================
+        path2.rewind();
+        path2.moveTo(coordinates[0],coordinates[1]);
+        for( int i=2; i<coordinates.length-1; i++ ) {
+            float x = coordinates[i];
+            float y = coordinates[++i];
+            if( x!=0 && y!=0 )
+              path2.lineTo(x,y);
+        }
     }
 
     int getPointNum(int x, int y) {
@@ -156,6 +165,10 @@ public class RailView extends View implements View.OnTouchListener {
         paint.setColor(Color.RED);
         paint.setStrokeWidth(5);
         canvas.drawPath(path, paint);
+
+        paint.setColor(Color.GRAY);
+        paint.setStrokeWidth(3);
+        canvas.drawPath(path2, paint);
 
 /*        paint.setColor(Color.BLACK);
         paint.setStrokeWidth(5);
